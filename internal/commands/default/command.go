@@ -8,8 +8,12 @@ type Translation interface {
 	Translate(text string) (string, error)
 }
 
+type State interface {
+}
+
 type Command struct {
 	translation Translation
+	userState   State
 }
 
 func NewCommand(translation Translation) *Command {
