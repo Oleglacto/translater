@@ -1,17 +1,33 @@
 package cache
 
-import "sync"
+import (
+	"github.com/pkg/errors"
+	"sync"
+)
+
+const StateKeyTemplate = "state.%d"
+
+var NotFound = errors.New("not found")
 
 type Cache struct {
 	m  map[string]interface{}
-	mx sync.RWMutex
+	mx *sync.RWMutex
 }
 
-func (c *Cache) Get(key string) (interface{}, bool) {
+func New() *Cache {
+	m := make(map[string]interface{})
+	mx := new(sync.RWMutex)
+	return &Cache{m: m, mx: mx}
+}
+
+func (c *Cache) Get(key string) (interface{}, error) {
 	c.mx.RLock()
 	defer c.mx.RUnlock()
 	val, ok := c.m[key]
-	return val, ok
+	if !ok {
+		return nil, NotFound
+	}
+	return val, nil
 }
 
 func (c *Cache) Set(key string, val any) error {

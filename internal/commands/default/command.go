@@ -1,6 +1,7 @@
 package _default
 
 import (
+	"context"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -16,17 +17,18 @@ type Command struct {
 	userState   State
 }
 
-func NewCommand(translation Translation) *Command {
+func New(translation Translation) *Command {
 	return &Command{translation: translation}
 }
 
-func (c Command) Handle(message tgbotapi.Message) (tgbotapi.MessageConfig, error) {
+func (c Command) Handle(ctx context.Context, message tgbotapi.Message) ([]tgbotapi.MessageConfig, error) {
+	var messages []tgbotapi.MessageConfig
 	result, err := c.translation.Translate(message.Text)
 	if err != nil {
-		return tgbotapi.MessageConfig{}, err
+		return nil, err
 	}
 
 	msg := tgbotapi.NewMessage(message.Chat.ID, result)
-
-	return msg, nil
+	messages = append(messages, msg)
+	return messages, nil
 }
