@@ -1,11 +1,10 @@
 package cache
 
 import (
-	"github.com/pkg/errors"
 	"sync"
-)
 
-const StateKeyTemplate = "state.%d"
+	"github.com/pkg/errors"
+)
 
 var NotFound = errors.New("not found")
 

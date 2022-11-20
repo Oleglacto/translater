@@ -41,6 +41,10 @@ func (c Client) Do(data Translate) (*TranslationsResult, error) {
 		return nil, err
 	}
 
+	if res.StatusCode != 200 {
+		return nil, fmt.Errorf("yandex client error: status is %q", res.Status)
+	}
+
 	resBody, err := ioutil.ReadAll(res.Body)
 
 	var result *TranslationsResult
